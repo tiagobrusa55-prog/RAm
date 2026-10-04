@@ -1,0 +1,198 @@
+// ============================================================================
+// 1. CONFIGURACIÓN DE TIPOS Y CONSTANTES
+// ============================================================================
+
+export enum PetType {
+    cat = "cat",
+    dog = "dog",
+    crab = "crab",
+    clippy = "clippy",
+    waifu = "waifu"
+}
+
+export enum PetColor {
+    default = "default"
+}
+
+export enum PetSize {
+    nano = "nano",
+    medium = "medium",
+    large = "large"
+}
+
+export enum PetSpeed {
+    still = 0,
+    normal = 3,
+    fast = 6
+}
+
+// ============================================================================
+// 2. CLASE BASE
+// ============================================================================
+
+export abstract class BasePetType {
+    abstract label: string;
+    abstract possibleColors: PetColor[];
+
+    abstract sequence: {
+        walk: {
+            start: number;
+            end: number;
+        };
+        run: {
+            start: number;
+            end: number;
+        };
+        hold: {
+            start: number;
+            end: number;
+        };
+        lie: {
+            start: number;
+            end: number;
+        };
+    };
+
+    protected speed: number = PetSpeed.normal;
+    protected runSpeed: number = PetSpeed.fast;
+
+    protected width: number;
+    protected height: number;
+    protected size: PetSize;
+
+    constructor(
+        width: number,
+        height: number,
+        size: PetSize
+    ) {
+        this.width = width;
+        this.height = height;
+        this.size = size;
+    }
+
+    public getSpeed(): number {
+        return this.speed;
+    }
+
+    public getRunSpeed(): number {
+        return this.runSpeed;
+    }
+
+    public getSize(): PetSize {
+        return this.size;
+    }
+}
+
+// ============================================================================
+// 3. WAIFU
+// ============================================================================
+
+export class Waifu extends BasePetType {
+
+    label = "Mi Waifu";
+
+    possibleColors: PetColor[] = [
+        PetColor.default
+    ];
+
+    sequence = {
+        walk: {
+            start: 1,
+            end: 2
+        },
+
+        run: {
+            start: 1,
+            end: 2
+        },
+
+        hold: {
+            start: 1,
+            end: 1
+        },
+
+        lie: {
+            start: 1,
+            end: 1
+        }
+    };
+
+    constructor(
+        spriteWidth: number,
+        spriteHeight: number,
+        size: PetSize
+    ) {
+        super(
+            spriteWidth,
+            spriteHeight,
+            size
+        );
+
+        this.speed = PetSpeed.normal;
+        this.runSpeed = PetSpeed.fast;
+    }
+}
+
+// ============================================================================
+// 4. FALLBACK
+// ============================================================================
+
+class FallbackCat extends BasePetType {
+
+    label = "Cat fallback";
+
+    possibleColors: PetColor[] = [
+        PetColor.default
+    ];
+
+    sequence = {
+        walk: {
+            start: 1,
+            end: 2
+        },
+
+        run: {
+            start: 1,
+            end: 2
+        },
+
+        hold: {
+            start: 1,
+            end: 1
+        },
+
+        lie: {
+            start: 1,
+            end: 1
+        }
+    };
+}
+
+// ============================================================================
+// 5. FACTORY
+// ============================================================================
+
+export function createPet(
+    type: PetType,
+    color: PetColor,
+    size: PetSize
+): BasePetType {
+
+    switch (type) {
+
+        case PetType.waifu:
+            return new Waifu(
+                64,
+                64,
+                size
+            );
+
+        case PetType.cat:
+        default:
+            return new FallbackCat(
+                32,
+                32,
+                size
+            );
+    }
+}
